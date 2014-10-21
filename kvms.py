@@ -16,9 +16,19 @@ if sys.argv[0] == 'list':
         print str(domain.ID()) + '\t' +  domain.name() + '\t' + state[domain.state()[0]]
 
 if sys.argv[0] == 'shutdown':
-    domain_name = sys.argv[1]
-    domain = conn.lookupByName(domain_name)
-    if (domain == None):
+    domainName = sys.argv[1]
+    found = shutdownByName(domainName)
+    if (!found):
         print 'Domain not found.'
         sys.exit(1)
+
+def shutdownByName(name):
+    domain = conn.lookupByName(domain_name)
+    if (domain == None):
+        return false
+    shutdown(domain)
+    return true
+
+def shutdown(domain):
     domain.shutdown()
+    
