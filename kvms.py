@@ -26,9 +26,12 @@ def shutdownByName(name):
     domain = conn.lookupByName(domain_name)
     if (domain == None):
         return false
-    shutdown(domain)
+    domain.shutdown()
     return true
 
-def shutdown(domain):
-    domain.shutdown()
-    
+def shutdownAll():
+    domains = conn.listAllDomains()    
+    for domain in domains:
+        domain.shutdown()
+
+
