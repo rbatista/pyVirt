@@ -4,6 +4,10 @@ import sys
 from virtualizer import Virtualizer
 
 class Cli:
+    DOMAIN_STATE = {0: 'No state', 1: 'Running', 2: 'Blocked',
+            3: 'Paused', 4: 'Being shut down', 5: 'Shut off',
+            6: 'Crashed', 7: 'Suspended'}
+
     commands = { 'list', 'shutdown', 'help' }
 
     def __init__(self):
@@ -39,7 +43,7 @@ class Cli:
 
         print 'ID\tDomain name\tState'
         for domain in domains:
-            print str(domain.ID()) + '\t' +  domain.name() + '\t' + state[domain.state()[0]]
+            print str(domain.ID()) + '\t' + domain.name() + '\t' + self.DOMAIN_STATE[domain.state()[0]]
 
     def help_list(self):
         return "list\nShow all domains"
@@ -57,6 +61,26 @@ class Cli:
 
     def help_shutdown(self):
         return 'shutdown [ all | domain_name ]\nGracefull shutdown a domain.'
+
+    def set_memory(self, domain_name, memory):
+        if (domain_name == 'all'):
+            domains = self.virt.get_all_domains()
+        else:
+            domains = { self.virt.get_domain_by_name(domain_name) }
+
+        if (domains == None):
+            print "Domain " + str(domain_name) +  " was not found"
+            sys.exit(1)
+
+        for domain in domains:
+            try:
+                self.virt.set_domain_memory(domain, memory)
+            except MemoryError as e:
+                print e.value
+                sys.exit(1)
+
+    def help_set_memory(self):
+        print 'set_memory [ all | domain_name ] <memory_size>'
 
     def help(self):
         return "Usage: kvms <command> [args]"
