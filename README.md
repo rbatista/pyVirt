@@ -1,7 +1,7 @@
 libvirt-scripts
 ===============
 
-Scripts to automate management of KVM virtual machines with libvirt.
+pyVirt is a cli to facilitate the management of KVM virtual machines with libvirt..
 
 Dependencies instalation
 ------------------------
