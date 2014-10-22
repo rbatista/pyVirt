@@ -23,40 +23,40 @@ class Cli:
             print self.help()
 
     def __call(self, command, opts = None):
-        if (opts == None):
-            getattr(self, str(command))()
-        else:
-            getattr(self, str(command))(*opts)
+        try:
+            if (opts == None):
+                getattr(self, str(command))()
+            else:
+                getattr(self, str(command))(*opts)
+        except:
+            print getattr(self, 'help_' + str(command))()
 
     def list(self):
         domains = self.virt.get_all_domains()
         if (domains == None):
             print "No domain found."
-            sys.exit(1)
+            return
 
         print 'ID\tDomain name\tState'
         for domain in domains:
             print str(domain.ID()) + '\t' +  domain.name() + '\t' + state[domain.state()[0]]
 
+    def help_list(self):
+        return "list\nShow all domains"
+
     def shutdown(self, domain_name):
         if (domain_name == 'all'):
             self.virt.shutdown_all()
-            print 'Shuting down ' + str(domain_name)
+            print 'Shuting down all domains'
         else:
             found = self.virt.shutdown_by_name(domain_name)
             if (not found):
                 print 'Domain ' + str(domain_name) + ' was not found.'
-                sys.exit(1)
             else:
                 print 'Shuting down ' + str(domain_name)
 
+    def help_shutdown(self):
+        return 'shutdown [ all | domain_name ]\nGracefull shutdown a domain.'
+
     def help(self):
         return "Usage: kvms <command> [args]"
-
-
-def main():
-    cli = Cli()
-    cli.parse(sys.argv)
-
-if __name__ == '__main__':
-    main()

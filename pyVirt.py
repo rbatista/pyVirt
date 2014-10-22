@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+
+import sys
+from cli import Cli
+
+def main():
+    c = Cli()
+    c.parse(sys.argv)
+
+if __name__ == '__main__':
+    main()
