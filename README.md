@@ -1,4 +1,4 @@
-libvirt-scripts
+pyVirt
 ===============
 
 pyVirt is a cli to facilitate the management of KVM virtual machines with libvirt..
