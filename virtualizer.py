@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import libvirt
 import sys
-from exceptions import MemoryError
 
 class Virtualizer:
 
@@ -38,14 +37,21 @@ class Virtualizer:
             return None
 
     def set_domain_memory(self, domain, memory):
-        max_memory = domain.getMaxMemory()
+        max_memory = domain.maxMemory()
         if (max_memory < memory):
             try:
                 domain.setMaxMemory(memory)
             except:
-                raise MemoryError("The max memory can not be changed.")
+                raise RuntimeError("The max memory can not be changed to " + domain.name())
 
         try:
             domain.setMemory(memory)
         except:
-            raise MemoryError("The domain memory can not be changed.")
+            raise RuntimeError("The memory can not be changed to " + domain.name())
+
+    def set_domain_vcpus(self, domain, vcpus):
+        if (domain.vcpus() != vcpus):
+            try:
+                domain.setVcpus(vcpus)
+            except:
+                raise RuntimeError("The vcpus could not be changed to" + domain.name())

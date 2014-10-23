@@ -8,7 +8,7 @@ class Cli:
             3: 'Paused', 4: 'Being shut down', 5: 'Shut off',
             6: 'Crashed', 7: 'Suspended'}
 
-    commands = { 'list', 'shutdown', 'help' }
+    commands = { 'list', 'shutdown' }
 
     def __init__(self):
         self.virt = Virtualizer()
@@ -60,9 +60,9 @@ class Cli:
                 print 'Shuting down ' + str(domain_name)
 
     def help_shutdown(self):
-        return 'shutdown [ all | domain_name ]\nGracefull shutdown a domain.'
+        return 'shutdown [ all | <domain_name> ]\nGracefull shutdown a domain.'
 
-    def set_memory(self, domain_name, memory):
+    def __resolve_domain(self, domain_name):
         if (domain_name == 'all'):
             domains = self.virt.get_all_domains()
         else:
@@ -71,16 +71,33 @@ class Cli:
         if (domains == None):
             print "Domain " + str(domain_name) +  " was not found"
             sys.exit(1)
+        return domains
 
+    def set_memory(self, domain_name, memory):
+        domains = self.__resolve_domain(domain_name)
         for domain in domains:
             try:
                 self.virt.set_domain_memory(domain, memory)
-            except MemoryError as e:
-                print e.value
+            except RuntimeError as err:
+                sys.stderr.write(str(err))
                 sys.exit(1)
 
     def help_set_memory(self):
-        print 'set_memory [ all | domain_name ] <memory_size>'
+        print 'set_memory [ all | <domain_name> ] <memory_size>'
+        print 'Configure the domain memory. Set the max_memory if necessary.'
+
+    def set_vcpus(self, domain_name, n_vcpus):
+        domains = self.__resolve_domain(domain_name)
+        for domain in domains:
+            try:
+                self.virt.set_domain_vcpus(domain, memory)
+            except RuntimeError as err:
+                sys.stderr.write(str(err))
+                sys.exit(1)
+
+    def help_set_vcpus(self):
+        print 'set_vcpus [ all | <domain_name> ] <vcpus_number>'
+        print 'Configure the domain memory. Set the max_memory if necessary.'
 
     def help(self):
-        return "Usage: kvms <command> [args]"
+        return "Usage: pyVirt <command> [<args>]"
