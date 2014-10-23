@@ -5,7 +5,7 @@ from cli import Cli
 
 def main():
     c = Cli()
-    c.parse(sys.argv)
+    return c.parse(sys.argv)
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

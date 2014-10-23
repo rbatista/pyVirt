@@ -42,16 +42,16 @@ class Virtualizer:
             try:
                 domain.setMaxMemory(memory)
             except:
-                raise RuntimeError("The max memory can not be changed to " + domain.name())
+                raise RuntimeError("The max memory can not be changed for " + domain.name())
 
         try:
             domain.setMemory(memory)
         except:
-            raise RuntimeError("The memory can not be changed to " + domain.name())
+            raise RuntimeError("The memory can not be changed for " + domain.name())
 
     def set_domain_vcpus(self, domain, vcpus):
         if (domain.vcpus() != vcpus):
             try:
                 domain.setVcpus(vcpus)
             except:
-                raise RuntimeError("The vcpus could not be changed to" + domain.name())
+                raise RuntimeError("The vcpus could not be changed for " + domain.name())
