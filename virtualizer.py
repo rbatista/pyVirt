@@ -5,19 +5,31 @@ import sys
 class Virtualizer:
 
     def __init__(self):
-        self.connection = libvirt.openReadOnly(None)
+        self.connection = libvirt.open('qemu:///system')
         if self.connection == None:
             print 'Failed to open connection to the hypervisor'
             sys.exit(1)
 
     def start(self, domain):
-        domain.create()
+        try:
+            domain.create()
+        except Exception as e:
+            print str(e)
+            return 1
 
     def reboot(sef, domain):
-        domain.reboot()
+        try:
+            domain.reboot()
+        except Exception as e:
+            print str(e)
+            return 1
 
     def shutdown(self, domain):
-        domain.shutdown()
+        try:
+            domain.shutdown()
+        except Exception as e:
+            print str(e)
+            return 1
 
     def shutdown_by_name(self, domain_name):
         domain = get_domain_by_name(domain_name)
@@ -35,14 +47,16 @@ class Virtualizer:
 
     def get_domain_by_name(self, domain_name):
         try:
-            domain = connection.lookupByName(domain_name)
-        except:
+            return self.connection.lookupByName(domain_name)
+        except Exception as e:
+            print str(e)
             return None
 
     def get_all_domains(self):
         try:
-            return connection.listAllDomains()
-        except:
+            return self.connection.listAllDomains()
+        except Exception as e:
+            print str(e)
             return None
 
     def set_domain_memory(self, domain, memory):

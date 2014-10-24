@@ -9,7 +9,7 @@ class Cli:
             6: 'Crashed', 7: 'Suspended'}
 
     commands = { 'list', 'shutdown', 'configure_domain',
-               'set_memory', 'set_vcpus'}
+               'set_memory', 'set_vcpus', 'start', 'reboot'}
 
     def __init__(self):
         self.virt = Virtualizer()
@@ -56,11 +56,26 @@ class Cli:
             self.virt.shutdown_all()
             print 'Shuting down all domains'
         else:
-            found = self.virt.shutdown_by_name(domain_name)
-            if (not found):
+            domain = self.virt.get_domain_by_name(domain_name)
+            self.virt.shutdown(domain)
+            if (domain == None):
                 print 'Domain ' + str(domain_name) + ' was not found.'
             else:
                 print 'Shuting down ' + str(domain_name)
+
+    def start(self, domain_name):
+        if (domain_name == 'all'):
+            domains = self.virt.get_all_domains()
+            print 'Starting all domains'
+        else:
+            print domain_name
+            domains = { self.virt.get_domain_by_name(domain_name) }
+            if (len(domains) == 0):
+                print 'Domain ' + str(domain_name) + ' was not found.'
+                return 1
+
+        for domain in domains:
+            self.virt.start(domain)
 
     def help_shutdown(self):
         print 'shutdown'
